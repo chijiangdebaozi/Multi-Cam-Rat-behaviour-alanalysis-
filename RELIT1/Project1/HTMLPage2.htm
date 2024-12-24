@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Heatmap</title>
+    <script src="heatmap.js"></script>
+</head>
+<body>
+    <h1>����ͼʾ��</h1>
+    <div id="heatmapContainer" style="height: 10000px; width: 10000px; text-align: center"></div>
+
+    <script type="text/javascript">
+        var heatmapInstance = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            radius: 120,
+            maxOpacity: 1,
+            minOpacity: 1,
+            gradient: {
+                0.0: '#3a4d8a', // blue
+                0.125: '#728cce', // blue
+                0.25: '#84a1db', // green
+                0.375: '#aec2df', // blue
+                0.5: '#e2d4d6', // yellow
+                0.625: '#edc5b1', // blue
+                0.75: '#e88d75', // orange
+                0.875: '#de5244', // blue
+                1.0: '#a62c38',  // red
+            }
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8000/', true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var html = xhr.responseText;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var links = doc.querySelectorAll('a[href]');
+                var txtFiles = [];
+
+                links.forEach(function (link) {
+                    if (link.href.endsWith('.txt')) {
+                        txtFiles.push(link.href);
+                    }
+                });
+
+                var allPoints = [];
+                txtFiles.forEach(function (file) {
+                    var xhrFile = new XMLHttpRequest();
+                    xhrFile.open('GET', file, true);
+                    xhrFile.onload = function () {
+                        if (xhrFile.status >= 200 && xhrFile.status < 300) {
+                            var lines = xhrFile.responseText.split('\n');
+
+                            // 修改处理每一行的方式
+                            lines.forEach(function (line) {
+                                // 分割每一行，假设每行都是以逗号分隔的 x 和 y 坐标
+                                var coordinates = line.split(',');
+                                var x = parseFloat(coordinates[0]);
+                                var y = parseFloat(coordinates[1]);
+
+                                // 检查是否成功获取了 x 和 y 坐标
+                                if (!isNaN(x) && !isNaN(y)) {
+                                    allPoints.push({ x: x, y: y });
+                                }
+                            });
+
+                            var heatmapData = {
+                                max: getMaxDensity(allPoints),
+                                data: allPoints
+                            };
+                            heatmapInstance.setData(heatmapData);
+                        } else {
+                            console.error('����ʧ�ܣ�' + xhrFile.statusText);
+                        }
+                    };
+                    xhrFile.onerror = function () {
+                        console.error('����ʧ�ܣ��������');
+                    };
+                    xhrFile.send();
+                });
+            } else {
+                console.error('����ʧ�ܣ�' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('����ʧ�ܣ��������');
+        };
+        xhr.send();
+
+        function getMaxDensity(data) {
+
+            return 100;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Heatmap</title>
+    <!-- ����heatmap.js�� -->
+    <script src="heatmap.js"></script>
+</head>
+<body>
+    <h1>����ͼʾ��</h1>
+    <!-- ����ͼ���� -->
+    <div id="heatmapContainer" style="height: 778px; width: 904px; text-align: center"></div>
+
+    <script type="text/javascript">
+        // ��ʼ������ͼʵ��
+        var heatmapInstance = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            radius: 30, // �����뾶��С
+            maxOpacity: 1, // ����������͸����
+            minOpacity: 0.1, // ���������С��͸����
+            gradient: {
+                0.02: '#0000ff', // blue
+                0.08: '#00ff00', // green
+                0.2: '#ffff00', // yellow
+                0.4: '#ffa500', // orange
+                0.9: '#ff0000'  // red
+            }
+        });
+
+        // ���������ȡ�����ļ��б�
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8000/', true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var html = xhr.responseText;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var links = doc.querySelectorAll('a[href]');
+                var txtFiles = [];
+
+                links.forEach(function (link) {
+                    if (link.href.endsWith('.txt')) {
+                        txtFiles.push(link.href);
+                    }
+                });
+
+                // ͳ���������ݵ�
+                var allPoints = [];
+                txtFiles.forEach(function (file) {
+                    var xhrFile = new XMLHttpRequest();
+                    xhrFile.open('GET', file, true);
+                    xhrFile.onload = function () {
+                        if (xhrFile.status >= 200 && xhrFile.status < 300) {
+                            var points = [];
+                            var lines = xhrFile.responseText.split('\n');
+                            lines.forEach(function (line) {
+                                var matches = line.match(/mouse:\s*(\d+\.\d+),\s*(\d+\.\d+)/);
+                                if (matches) {
+                                    var x = parseFloat(matches[1]);
+                                    var y = parseFloat(matches[2]);
+                                    points.push({ x: x, y: y });
+                                }
+                            });
+                            allPoints = allPoints.concat(points);
+
+                            // ��������ͼ����
+                            var heatmapData = {
+                                max: getMaxDensity(allPoints),
+                                data: allPoints
+                            };
+                            heatmapInstance.setData(heatmapData);
+                        } else {
+                            console.error('����ʧ�ܣ�' + xhrFile.statusText);
+                        }
+                    };
+                    xhrFile.onerror = function () {
+                        console.error('����ʧ�ܣ��������');
+                    };
+                    xhrFile.send();
+                });
+            } else {
+                console.error('����ʧ�ܣ�' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('����ʧ�ܣ��������');
+        };
+        xhr.send();
+
+        // ��ȡ�����е�����ܶ�
+        function getMaxDensity(data) {
+            // ������Ա�д�������ݵ��ܶȵĴ���
+            // ���磬����ʹ�ú��ܶȹ��Ƶȷ����������ܶ�
+            // ����򵥵ط���һ���̶�ֵ��Ϊʾ��
+            return 100; // ��������ܶ�Ϊ100
+        }
+    </script>
+</body>
+</html>

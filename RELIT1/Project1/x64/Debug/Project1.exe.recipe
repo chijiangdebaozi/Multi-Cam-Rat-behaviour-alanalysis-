@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>D:\visual studio2022\DATE\Project1\x64\Debug\Project1.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\HTMLPage.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\HTMLPage1.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取所有点.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取所有点位2.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取映射点.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取点位.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取点位3.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取点位最终.htm</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>D:\visual studio2022\DATE\Project1\Project1\获取点位最终2.htm</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>

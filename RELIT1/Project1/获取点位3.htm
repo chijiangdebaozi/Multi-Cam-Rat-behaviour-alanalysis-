@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Heatmap</title>
+    <script src="heatmap.js"></script>
+</head>
+<body>
+    <h1>热力图</h1>
+    <div id="heatmapContainer" style="height: 778px; width: 904px; text-align: center"></div>
+
+    <script type="text/javascript">
+        var heatmapInstance = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            gradient: {
+                0.1: 'blue',
+                0.3: 'green',
+                0.5: 'yellow',
+                0.7: 'orange',
+                1.0: 'red'
+            },
+            radius: 20, // Adjust the radius as needed
+            maxOpacity: 0.8, // Maximum opacity for heatmap points
+            minOpacity: 0.2 // Minimum opacity for heatmap points
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8000/', true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var html = xhr.responseText;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var links = doc.querySelectorAll('a[href]');
+                var txtFiles = [];
+
+                links.forEach(function (link) {
+                    if (link.href.endsWith('.txt')) {
+                        txtFiles.push(link.href);
+                    }
+                });
+
+                var allPoints = [];
+                txtFiles.forEach(function (file) {
+                    var xhrFile = new XMLHttpRequest();
+                    xhrFile.open('GET', file, true);
+                    xhrFile.onload = function () {
+                        if (xhrFile.status >= 200 && xhrFile.status < 300) {
+                            var points = [];
+                            var lines = xhrFile.responseText.split('\n');
+                            lines.forEach(function (line) {
+                                var matches = line.match(/mouse:\s*(\d+\.\d+),\s*(\d+\.\d+),\s*(\d+)/);
+                                if (matches) {
+                                    var x = parseFloat(matches[1]);
+                                    var y = parseFloat(matches[2]);
+                                    var value = parseInt(matches[3]);
+                                    points.push({ x: x, y: y, value: value });
+                                }
+                            });
+                            allPoints = allPoints.concat(points);
+
+                            // Adjust the gradient based on point density
+                            var maxDensity = getMaxDensity(allPoints);
+                            var gradient = {};
+                            for (var i = 0; i <= 1.0; i += 0.1) {
+                                if (i < 0.5) {
+                                    gradient[i] = 'blue';
+                                } else if (i < 0.75) {
+                                    gradient[i] = 'green';
+                                } else if (i < 0.9) {
+                                    gradient[i] = 'yellow';
+                                } else {
+                                    gradient[i] = 'red';
+                                }
+                            }
+
+                            var heatmapData = {
+                                max: maxDensity,
+                                data: allPoints
+                            };
+                            heatmapInstance.configure({
+                                gradient: gradient
+                            });
+                            heatmapInstance.setData(heatmapData);
+                        } else {
+                            console.error('请求失败：' + xhrFile.statusText);
+                        }
+                    };
+                    xhrFile.onerror = function () {
+                        console.error('请求失败：网络错误');
+                    };
+                    xhrFile.send();
+                });
+            } else {
+                console.error('请求失败：' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('请求失败：网络错误');
+        };
+        xhr.send();
+
+        // Calculate the density of points
+        function getMaxDensity(data) {
+            var maxDensity = 0;
+            data.forEach(function (point) {
+                maxDensity = Math.max(maxDensity, point.value);
+            });
+            return maxDensity;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{0d1136d1-a7d1-42e8-9281-a55bab9c09f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\typings">
+      <UniqueIdentifier>{5b7de0b7-c3a3-41cd-9c55-b19679ba3ce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\typings\geojson">
+      <UniqueIdentifier>{958dbd4a-b3fe-4b64-a7a8-d5b361c12015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\typings\leaflet">
+      <UniqueIdentifier>{2d2677b3-2550-4a6c-94da-e3d85aaf516f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\typings\heatmap.js">
+      <UniqueIdentifier>{d6372859-467f-4e38-bb99-189b4cc955db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HTMLPage.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Scripts\typings\geojson\geojson.d.ts">
+      <Filter>Scripts\typings\geojson</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Scripts\typings\leaflet\leaflet.d.ts">
+      <Filter>Scripts\typings\leaflet</Filter>
+    </None>
+    <None Include="Scripts\typings\heatmap.js\heatmap.d.ts">
+      <Filter>Scripts\typings\heatmap.js</Filter>
+    </None>
+    <None Include="HTMLPage1.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="获取点位.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="获取点位3.htm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="获取所有点.htm" />
+    <None Include="获取所有点位2.htm" />
+    <None Include="获取点位最终.htm" />
+    <None Include="获取映射点.htm" />
+    <None Include="获取点位最终2.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

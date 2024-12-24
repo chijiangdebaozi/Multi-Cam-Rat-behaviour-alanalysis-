@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Heatmap</title>
+    <!-- ����heatmap.js�� -->
+    <script src="heatmap.js"></script>
+</head>
+<body>
+    <h1>����ͼʾ��</h1>
+    <!-- ����ͼ���� -->
+    <div id="heatmapContainer" style="height: 6000px; width: 6000px; text-align: center"></div>
+
+    <script type="text/javascript">
+        // ��ʼ������ͼʵ��
+        // 初始化热图实例
+        var heatmapInstance = h337.create({
+            container: document.getElementById('heatmapContainer'),
+            radius: 80, // 设置半径大小
+            maxOpacity: 1, // 设置最大透明度
+            minOpacity: 0.7, // 设置最小透明度
+            gradient: {
+                0.02: '#0000ff', // 蓝色
+                0.08: '#00ff00', // 绿色
+                0.2: '#ffff00', // 黄色
+                0.4: '#ffa500', // 橙色
+                0.9: '#ff0000'  // 红色
+            }
+        });
+
+        // 从服务器获取文件列表
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8000/', true);
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var html = xhr.responseText;
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var links = doc.querySelectorAll('a[href]');
+                var txtFiles = [];
+
+                links.forEach(function (link) {
+                    if (link.href.endsWith('.txt')) {
+                        txtFiles.push(link.href);
+                    }
+                });
+
+                // 统计所有数据点
+                var allPoints = [];
+                txtFiles.forEach(function (file) {
+                    var xhrFile = new XMLHttpRequest();
+                    xhrFile.open('GET', file, true);
+                    xhrFile.onload = function () {
+                        if (xhrFile.status >= 200 && xhrFile.status < 300) {
+                            var points = [];
+                            var lines = xhrFile.responseText.split('\n');
+                            lines.forEach(function (line) {
+                                var parts = line.split(',');
+                                if (parts.length === 2) {
+                                    var x = parseFloat(parts[0]);
+                                    var y = parseFloat(parts[1]);
+                                    points.push({ x: x, y: y });
+                                }
+                            });
+                            allPoints = allPoints.concat(points);
+
+                            // 设置热图数据
+                            var heatmapData = {
+                                max: getMaxDensity(allPoints),
+                                data: allPoints
+                            };
+                            heatmapInstance.setData(heatmapData);
+                        } else {
+                            console.error('请求失败：' + xhrFile.statusText);
+                        }
+                    };
+                    xhrFile.onerror = function () {
+                        console.error('请求失败：网络错误');
+                    };
+                    xhrFile.send();
+                });
+            } else {
+                console.error('请求失败：' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('请求失败：网络错误');
+        };
+        xhr.send();
+
+        // 获取数据点的最大密度
+        function getMaxDensity(data) {
+            // 这里可以根据实际情况计算数据的密度，或者直接返回一个固定值作为示例
+            return 100; // 设置最大密度为100
+        }
+
+    </script>
+</body>
+</html>
